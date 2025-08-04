@@ -1,9 +1,6 @@
-import utils
+from com.mewtwo.linear_regression import utils
 from matplotlib import pyplot as plt
 import numpy as np
-import random
-
-from utils import draw_line
 
 '''
 Liner Regression -
