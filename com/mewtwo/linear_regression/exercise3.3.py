@@ -1,6 +1,6 @@
 import numpy as np
 
-from com.mewtwo.linear_regression import utils
+import utils
 
 sizes = np.array([100, 200, 200, 250, 325])
 prices = np.array([200, 475, 400, 520, 735])

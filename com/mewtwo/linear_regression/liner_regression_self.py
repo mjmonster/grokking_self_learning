@@ -1,4 +1,4 @@
-from com.mewtwo.linear_regression import utils
+import utils
 from matplotlib import pyplot as plt
 import numpy as np
 
@@ -72,3 +72,4 @@ while int(b)<n_lines:
 
 
 utils.show_plot()
+print('aaaaa')
