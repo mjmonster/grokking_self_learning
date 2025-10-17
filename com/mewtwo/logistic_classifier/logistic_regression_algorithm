@@ -1,0 +1,73 @@
+import math
+
+
+xweight = 0
+yweight = 0
+bias = 0
+log_loss =111
+
+##x, y, label
+dataset = [(3,2,0), (1,2,1), (0,1,1), (2,0,0)]
+
+
+class Model :
+    def __init__ (self, xwei, ywei, biass):
+        self.xwei = xwei
+        self.ywei = ywei
+        self.biass = biass
+
+model1 = Model(1,2,-4)
+model2 = Model(1, -1, 0)
+
+
+def sigmoid(x):
+    return 1 / (1 + math.exp(-x))
+
+def predict(model, data):
+    return sigmoid(data[0]*model.xwei + data[1]*model.ywei + model.biass)
+
+def predict_res(pred):
+    return 1 if pred >= 0.5 else 0
+
+def point_position(model, data):
+    if data[1]>= model.xwei*data[0] + model.biass:
+        return "above_line"
+    else:  
+        return "below_line"
+
+
+# log loss = -ylog(p) - (1-y)log(1-p)
+
+def log_loss_cal(data):
+    return -0*math.log(data)-1*math.log(1-data)
+
+def tuner(data, learning_rate=0.01, predicted=None):
+    global xweight, yweight, bias, log_loss
+    if (data[2] != predicted):
+        xweight += learning_rate * (data[2]-predicted) * data[0]
+        yweight += learning_rate*(data[2]-predicted) * data[1]
+        bias += learning_rate*(data[2]-predicted)
+    log_loss = log_loss_cal(predicted)
+
+# def move_line(pred, actual, learning_rate=0.01):
+#     global xweight, yweight, bias 
+#     if (predict_res(pred) == actual):
+#         ## move the line away from the predicted point
+#         if (point_position(Model(xweight, yweight, bias),actual) == "above_line"):
+#             xweight += learning_rate
+#             yweight -= learning_rate
+#             bias -= learning_rate
+#         else:
+#             xweight -= learning_rate
+#             yweight += learning_rate
+#             bias += learning_rate
+#     else:
+#         ## move the line towards the predicted point
+#         if (point_position(Model(xweight, yweight, bias),actual) == "above_line"):
+#             xweight -= learning_rate
+#             yweight += learning_rate
+#             bias += learning_rate
+#         else:
+#             xweight += learning_rate
+#             yweight -= learning_rate
+#             bias -= learning_rate
