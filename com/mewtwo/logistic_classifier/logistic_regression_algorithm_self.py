@@ -1,5 +1,12 @@
-import math
+from matplotlib import pyplot as plt
+import numpy as np
+import random
+import utils
 
+features = np.array([[1,0],[0,2],[1,1],[1,2],[1,3],[2,2],[3,2],[2,3]])
+labels = np.array([0,0,0,0,1,1,1,1])
+
+utils.plot_points(features, labels)
 
 xweight = 0
 yweight = 0
@@ -8,7 +15,6 @@ log_loss =111
 
 ##x, y, label
 dataset = [(3,2,0), (1,2,1), (0,1,1), (2,0,0)]
-
 
 class Model :
     def __init__ (self, xwei, ywei, biass):
