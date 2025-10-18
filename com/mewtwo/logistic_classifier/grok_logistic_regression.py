@@ -1,5 +1,6 @@
 """logistic regression self implemented""" 
 import random
+import math
 import numpy as np
 import utils
 from matplotlib import pyplot as plt
@@ -12,7 +13,7 @@ utils.plot_points(features, labels)
 
 def logistic_trick(weights, bias, feature, label, learning_rate=0.1): 
     """perform logistic trick to move weights and bias"""
-    prediction_rate = calculate_prediction(feature, weights, bias)
+    prediction_rate, prediction_res = calculate_prediction(feature, weights, bias)
     # pred_res = 1 if prediction_rate > 0 else 0
     # if label == pred_res:
     # if prediction is correct, label - prediction is positive
@@ -21,10 +22,19 @@ def logistic_trick(weights, bias, feature, label, learning_rate=0.1):
     bias += learning_rate * (label - prediction_rate)
     return weights, bias, prediction_rate
 
+def sigmoid(x):
+    """sigmoid function"""
+    return 1 / (1 + np.exp(-x))
+
 def calculate_prediction(feature, weights, bias):
     """calculate the predicted rate and 0/1 result based on point + current weights and bias"""
-    prediction_rate = 1 / (1 + np.exp(-(weights[0]*feature[0] + weights[1]*feature[1] + bias)))
-    predict_res = 1 if prediction_rate > 0 else 0
+    # Calculate the weighted sum as a single scalar using np.dot()
+    weighted_sum = np.dot(weights, feature) + bias
+    # print(f'weighted sum: {weighted_sum}')
+    # Pass the single scalar value to the sigmoid function
+    prediction_rate = sigmoid(weighted_sum)
+    ##prediction_rate range (0,1), should be compared with 0.5 to get 0/1
+    predict_res = 1 if prediction_rate > 0.5 else 0
     return prediction_rate, predict_res
 
 def group_log_loss(weights, bias):
@@ -35,8 +45,8 @@ def group_log_loss(weights, bias):
         if predict_res == labels[i]:
             errors.append(-np.log(prediction_rate))
         else:
-            errors.append(np.log(1 - prediction_rate))
-    return sum(errors)
+            errors.append(-np.log(1 - prediction_rate))
+    return math.prod(errors)
  
 def logistic_algorithm(features_v, labels_v, learning_rate=0.1, epochs=200):
     """perform logistic algorithm and set up learning rate and epochs"""
