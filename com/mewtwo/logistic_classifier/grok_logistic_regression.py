@@ -13,16 +13,16 @@ utils.plot_points(features, labels)
 
 def logistic_trick(weights, bias, feature, label, learning_rate=0.1):
     """perform logistic trick to move weights and bias"""
-    prediction_rate, prediction_res = calculate_prediction(feature, weights, bias)
+    prediction = calculate_prediction(feature, weights, bias)
     # pred_res = 1 if prediction_rate > 0 else 0
     # if label == pred_res:
     # if prediction is correct, label - prediction is positive
-    weights[0] += learning_rate * (label - prediction_rate) * feature[0]
-    weights[1] += learning_rate * (label - prediction_rate) * feature[1]
+    weights[0] += learning_rate * (label - prediction[0]) * feature[0]
+    weights[1] += learning_rate * (label - prediction[0]) * feature[1]
     for i, weight in enumerate(weights):
-        weight += learning_rate * (label - prediction_rate) * feature[i]
-        bias += learning_rate * (label - prediction_rate)
-    return weights, bias, prediction_rate
+        weight += learning_rate * (label - prediction[0]) * feature[i]
+        bias += learning_rate * (label - prediction[0])
+    return weights, bias, prediction[0]
 
 def sigmoid(x):
     """sigmoid function"""
