@@ -11,7 +11,7 @@ labels = np.array([0,0,0,0,1,1,1,1])
 utils.plot_points(features, labels)
 
 
-def logistic_trick(weights, bias, feature, label, learning_rate=0.1): 
+def logistic_trick(weights, bias, feature, label, learning_rate=0.1):
     """perform logistic trick to move weights and bias"""
     prediction_rate, prediction_res = calculate_prediction(feature, weights, bias)
     # pred_res = 1 if prediction_rate > 0 else 0
@@ -19,7 +19,9 @@ def logistic_trick(weights, bias, feature, label, learning_rate=0.1):
     # if prediction is correct, label - prediction is positive
     weights[0] += learning_rate * (label - prediction_rate) * feature[0]
     weights[1] += learning_rate * (label - prediction_rate) * feature[1]
-    bias += learning_rate * (label - prediction_rate)
+    for i, weight in enumerate(weights):
+        weight += learning_rate * (label - prediction_rate) * feature[i]
+        bias += learning_rate * (label - prediction_rate)
     return weights, bias, prediction_rate
 
 def sigmoid(x):
@@ -41,13 +43,23 @@ def group_log_loss(weights, bias):
     """calculate the total log loss with set features and labels under given weights and bias"""
     errors = []
     for i,feature in enumerate(features):
-        prediction_rate, predict_res = calculate_prediction(feature, weights, bias)
-        if predict_res == labels[i]:
-            errors.append(-np.log(prediction_rate))
-        else:
-            errors.append(-np.log(1 - prediction_rate))
+        # calculate_prediction returns 2 varaiables : prediction rate and prediction result
+        # therefore prediction[0] is the prediction rate,  
+        # using that to avoid unused variable Pylint warning
+        prediction = calculate_prediction(feature, weights, bias)
+        # if predict_res == labels[i]:
+        #     errors.append(-np.log(prediction_rate))
+        # else:
+        #     errors.append(-np.log(1 - prediction_rate))
+        errors.append(log_loss(prediction[0], labels[i])) #prediction[0] is the rated prediction
     return math.prod(errors)
- 
+
+def log_loss(prediction, label):
+    """calculate log loss for single prediction and label"""
+    ## label is either 0 or 1, so only one of the two terms will be non-zero
+    ## hence statement can be condensed into below formula
+    return - label * np.log(prediction) - (1 - label) * np.log(1 - prediction)
+
 def logistic_algorithm(features_v, labels_v, learning_rate=0.1, epochs=200):
     """perform logistic algorithm and set up learning rate and epochs"""
     weights = [1,2]
@@ -62,7 +74,9 @@ def logistic_algorithm(features_v, labels_v, learning_rate=0.1, epochs=200):
         utils.draw_line(weights[0], weights[1], bias)
     utils.plot_points(features_v, labels_v)
     plt.show()
-    # plt.scatter(range(epochs), errors)
+    plt.scatter(range(epochs), errors_t)
+    plt.show()
+
     return weights, bias, errors_t
 
 
